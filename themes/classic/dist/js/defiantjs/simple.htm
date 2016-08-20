@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Defiant.js - Simple demo</title>
+<script type="text/javascript" src="./defiant.js"></script>
+<script type="text/javascript" src="./string.js"></script>
+<script type="text/javascript" src="./ie.polyfill.js"></script>
+<script type="text/javascript" src="./json.js"></script>
+<script type="text/javascript" src="./json.search.js"></script>
+<script type="text/javascript" src="./json.toXML.js"></script>
+<script type="text/javascript" src="./node.toJSON.js"></script>
+<script type="text/javascript" src="./node.select.js"></script>
+<script type="text/javascript" src="./node.serialize.js"></script>
+</head>
+<body>
+
+<!-- Defiant template -->
+<script type="defiant/xsl-template">
+
+<xsl:template name="books_template">
+	<h1>Books</h1>
+	<xsl:for-each select="//book">
+		<xsl:sort order="ascending" data-type="number" select="price"/>
+		<h2><xsl:value-of select="title"/></h2>
+		Author: <strong><xsl:value-of select="author"/></strong><br/>
+		Price: <xsl:value-of select="price"/>
+	</xsl:for-each>
+</xsl:template>
+
+</script>
+
+<!-- Output element -->
+<div id="output"></div>
+<script type="text/javascript">
+ obj = {
+        "car": [
+            {"id": 10, "color": "silver", "name": "Volvo"},
+            {"id": 11, "color": "red",    "name": "Saab"},
+            {"id": 12, "color": "red",    "name": "Peugeot"},
+            {"id": 13, "color": "yellow", "name": "Porsche"}
+        ],
+        "bike": [
+            {"id": 20, "color": "black", "name": "Cannondale"},
+            {"id": 21, "color": "red",   "name": "Shimano"}
+        ]
+    },
+    console.log( obj );
+    search = JSON.search(obj, '//car[color="yellow"]/name');
+var str = '<data><user id="1" name="Hakan Bilgin">'+
+          '<mail>hbi@bredband.net</mail></user></data>',
+    doc = Defiant.xmlFromString(str),
+    obj = Defiant.node.toJSON(doc.documentElement);
+
+console.log( obj);
+console.log( search );
+// ["Porsche"]
+
+var reds = JSON.search(obj, '//*[color="red"]');
+var test = [] ;
+for (var i=0; i<reds.length; i++) {
+    console.log( reds[i].name );
+    test.push(i,reds[i].name);
+}
+console.log( test );
+</script>
+<script type="text/javascript">
+
+	var data = {
+		"store": {
+			"book": [{
+				"title": "The Lord of the Rings",
+				"author": "J. R. R. Tolkien",
+				"category": "Fiction",
+				"price": 22.99,
+			   },
+			   {
+			   	"title": "Moby Dick",
+				"author": "Herman Melville",
+				"category": "Fiction",
+				"price": 8.99
+			   }]
+		   	}
+		},
+		htm = Defiant.render({
+			'template': 'books_template',
+			'data': data,
+			'sorter': {
+				'order': 'descending',
+				'select': '@price',
+				'type': 'number'
+			}
+		});
+
+	document.getElementById('output').innerHTML = htm;
+  
+</script>
+
+</body>
+</html>
